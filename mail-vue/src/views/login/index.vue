@@ -16,9 +16,6 @@
           <div v-show="show === 'login'">
             <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
             <el-input class="email-input" v-model="form.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
-              <template #append>
-                {{ suffix }}
-              </template>
             </el-input>
             <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off">
             </el-input>
@@ -29,9 +26,6 @@
           <div v-show="show !== 'login'">
             <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
             <el-input class="email-input" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
-              <template #append>
-                {{ suffix }}
-              </template>
             </el-input>
             <el-input v-model="registerForm.password" :placeholder="$t('password')" type="password" autocomplete="off" />
             <el-input v-model="registerForm.confirmPassword" :placeholder="$t('confirmPwd')" type="password" autocomplete="off" />
