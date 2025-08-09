@@ -14,7 +14,6 @@
           <span class="form-desc" v-if="show === 'login'">{{$t('loginTitle')}}</span>
           <span class="form-desc" v-else>{{$t('regTitle')}}</span>
           <div v-show="show === 'login'">
-            <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
             <el-input v-model="form.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off"></el-input>
             <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off">
             </el-input>
@@ -23,7 +22,6 @@
             </el-button>
           </div>
           <div v-show="show !== 'login'">
-            <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
             <el-input v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off"></el-input>
             <el-input v-model="registerForm.password" :placeholder="$t('password')" type="password" autocomplete="off" />
             <el-input v-model="registerForm.confirmPassword" :placeholder="$t('confirmPwd')" type="password" autocomplete="off" />
@@ -80,7 +78,6 @@ const form = reactive({
   password: '',
 
 });
-// suffix 用于存储和显示从域名列表获取的第一个域名
 const registerForm = reactive({
   email: '',
   password: '',
@@ -88,15 +85,6 @@ const registerForm = reactive({
   code: null
 })
 const registerLoading = ref(false)
-// 默认使用域名列表的第一个作为后缀
-// 检查 domainList 是否为有效的非空数组
-const suffix = computed(() => {
-  if (Array.isArray(settingStore.domainList) && settingStore.domainList.length > 0) {
-    return settingStore.domainList[0];
-  }
-  console.error("错误：域名列表为空，无法设置默认的邮箱域名后缀。");
-  return '';
-})
 const verifyShow = ref(false)
 let verifyToken = ''
 let turnstileId = null
@@ -152,7 +140,7 @@ const submit = () => {
     return
   }
 
-  if (!isEmail(form.email + suffix.value)) {
+  if (!isEmail(form.email)) {
     ElMessage({
       message: t('notEmailMsg'),
       type: 'error',
@@ -171,8 +159,7 @@ const submit = () => {
   }
 
   loginLoading.value = true
-  // 将用户输入的前缀与 suffix 值拼接成完整的邮箱地址
-  login(form.email + suffix.value, form.password).then(async data => {
+  login(form.email, form.password).then(async data => {
     localStorage.setItem('token', data.token)
     const user = await loginUserInfo();
     accountStore.currentAccountId = user.accountId;
@@ -200,7 +187,7 @@ function submitRegister() {
     return
   }
 
-  if (!isEmail(registerForm.email + suffix.value)) {
+  if (!isEmail(registerForm.email)) {
     ElMessage({
       message: t('notEmailMsg'),
       type: 'error',
@@ -279,8 +266,7 @@ function submitRegister() {
   registerLoading.value = true
 
   const form = {
-    // 将用户输入的前缀与 suffix 值拼接成完整的邮箱地址
-    email: registerForm.email + suffix.value,
+    email: registerForm.email,
     password: registerForm.password,
     token: verifyToken,
     code: registerForm.code

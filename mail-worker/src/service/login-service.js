@@ -24,7 +24,12 @@ const loginService = {
 
 	async register(c, params) {
 
-		const { email, password, token, code } = params;
+		let { email, password, token, code } = params;
+
+		if (!c.env.DEFAULT_EMAIL_DOMAIN) {
+			throw new BizError('The DEFAULT_EMAIL_DOMAIN environment variable is not configured on the backend.');
+		}
+		email = `${email}@${c.env.DEFAULT_EMAIL_DOMAIN}`;
 
 		const {regKey, register, registerVerify, regVerifyCount} = await settingService.query(c)
 
@@ -49,9 +54,6 @@ const loginService = {
 			throw new BizError(t('pwdMinLengthLimit'));
 		}
 
-		if (!c.env.domain.includes(emailUtils.getDomain(email))) {
-			throw new BizError(t('notEmailDomain'));
-		}
 
 		let type = null;
 		let regKeyId = 0
@@ -186,7 +188,12 @@ const loginService = {
 
 	async login(c, params) {
 
-		const { email, password } = params;
+		let { email, password } = params;
+
+		if (!c.env.DEFAULT_EMAIL_DOMAIN) {
+			throw new BizError('The DEFAULT_EMAIL_DOMAIN environment variable is not configured on the backend.');
+		}
+		email = `${email}@${c.env.DEFAULT_EMAIL_DOMAIN}`;
 
 		if (!email || !password) {
 			throw new BizError(t('emailAndPwdEmpty'));
