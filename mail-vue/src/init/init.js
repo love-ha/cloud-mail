@@ -33,7 +33,7 @@ export async function init() {
         const [s, user] = await Promise.all([websiteConfig(), userPromise]);
         setting = s;
         settingStore.settings = setting;
-        settingStore.domainList = setting.domainList;
+        settingStore.domainList = setting.domainList.filter(domain => domain !== 'student.pmrb.edu.pl');
         document.title = setting.title;
 
         if (user) {
@@ -49,7 +49,7 @@ export async function init() {
     } else {
         setting = await websiteConfig();
         settingStore.settings = setting;
-        settingStore.domainList = setting.domainList;
+        settingStore.domainList = setting.domainList.filter(domain => domain !== 'student.pmrb.edu.pl');
         document.title = setting.title;
     }
 
