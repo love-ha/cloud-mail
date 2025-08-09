@@ -15,8 +15,7 @@
           <span class="form-desc" v-else>{{$t('regTitle')}}</span>
           <div v-show="show === 'login'">
             <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
-            <el-input class="email-input" v-model="form.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
-            </el-input>
+            <el-input v-model="form.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off"></el-input>
             <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off">
             </el-input>
             <el-button class="btn" type="primary" @click="submit" :loading="loginLoading"
@@ -25,8 +24,7 @@
           </div>
           <div v-show="show !== 'login'">
             <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
-            <el-input class="email-input" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
-            </el-input>
+            <el-input v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off"></el-input>
             <el-input v-model="registerForm.password" :placeholder="$t('password')" type="password" autocomplete="off" />
             <el-input v-model="registerForm.confirmPassword" :placeholder="$t('confirmPwd')" type="password" autocomplete="off" />
             <el-input v-if="settingStore.settings.regKey === 0" v-model="registerForm.code" :placeholder="$t('regKey')" type="text" autocomplete="off" />
@@ -409,9 +407,6 @@ function submitRegister() {
     border-radius: 6px;
   }
 
-  .email-input :deep(.el-input__wrapper){
-    border-radius: 6px 0 0 6px;
-  }
 
   .el-input {
     height: 38px;
