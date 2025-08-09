@@ -81,24 +81,22 @@ const form = reactive({
 
 });
 // suffix 用于存储和显示从域名列表获取的第一个域名
-const suffix = ref('')
 const registerForm = reactive({
   email: '',
   password: '',
   confirmPassword: '',
   code: null
 })
-const domainList = settingStore.domainList;
 const registerLoading = ref(false)
 // 默认使用域名列表的第一个作为后缀
 // 检查 domainList 是否为有效的非空数组
-if (Array.isArray(domainList) && domainList.length > 0) {
-  suffix.value = domainList[0];
-} else {
-  // 如果域名列表为空，则将后缀设置为空字符串，并打印错误日志
-  suffix.value = '';
+const suffix = computed(() => {
+  if (Array.isArray(settingStore.domainList) && settingStore.domainList.length > 0) {
+    return settingStore.domainList[0];
+  }
   console.error("错误：域名列表为空，无法设置默认的邮箱域名后缀。");
-}
+  return '';
+})
 const verifyShow = ref(false)
 let verifyToken = ''
 let turnstileId = null
