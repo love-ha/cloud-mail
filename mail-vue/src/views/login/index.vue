@@ -14,28 +14,10 @@
           <span class="form-desc" v-if="show === 'login'">{{$t('loginTitle')}}</span>
           <span class="form-desc" v-else>{{$t('regTitle')}}</span>
           <div v-show="show === 'login'">
+            <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
             <el-input class="email-input" v-model="form.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
               <template #append>
-                <div @click.stop="openSelect">
-                  <el-select
-                      v-if="show === 'login'"
-                      ref="mySelect"
-                      v-model="suffix"
-                      :placeholder="$t('select')"
-                      class="select"
-                  >
-                    <el-option
-                        v-for="item in domainList"
-                        :key="item"
-                        :label="item"
-                        :value="item"
-                    />
-                  </el-select>
-                  <div style="color: #333">
-                    <span>{{ suffix }}</span>
-                    <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
-                  </div>
-                </div>
+                {{ suffix }}
               </template>
             </el-input>
             <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off">
@@ -45,28 +27,10 @@
             </el-button>
           </div>
           <div v-show="show !== 'login'">
+            <!-- 移除了域名下拉框，现在通过 append 插槽直接显示默认域名 -->
             <el-input class="email-input" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off">
               <template #append>
-                <div @click.stop="openSelect">
-                  <el-select
-                      v-if="show !== 'login'"
-                      ref="mySelect"
-                      v-model="suffix"
-                      :placeholder="$t('select')"
-                      class="select"
-                  >
-                    <el-option
-                        v-for="item in domainList"
-                        :key="item"
-                        :label="item"
-                        :value="item"
-                    />
-                  </el-select>
-                  <div style="color: #333">
-                    <span>{{ suffix }}</span>
-                    <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
-                  </div>
-                </div>
+                {{ suffix }}
               </template>
             </el-input>
             <el-input v-model="registerForm.password" :placeholder="$t('password')" type="password" autocomplete="off" />
@@ -124,7 +88,7 @@ const form = reactive({
   password: '',
 
 });
-const mySelect = ref()
+// suffix 用于存储和显示从域名列表获取的第一个域名
 const suffix = ref('')
 const registerForm = reactive({
   email: '',
@@ -134,7 +98,15 @@ const registerForm = reactive({
 })
 const domainList = settingStore.domainList;
 const registerLoading = ref(false)
-suffix.value = domainList[0]
+// 默认使用域名列表的第一个作为后缀
+// 检查 domainList 是否为有效的非空数组
+if (Array.isArray(domainList) && domainList.length > 0) {
+  suffix.value = domainList[0];
+} else {
+  // 如果域名列表为空，则将后缀设置为空字符串，并打印错误日志
+  suffix.value = '';
+  console.error("错误：域名列表为空，无法设置默认的邮箱域名后缀。");
+}
 const verifyShow = ref(false)
 let verifyToken = ''
 let turnstileId = null
@@ -178,9 +150,6 @@ const background = computed(() => {
 })
 
 
-const openSelect = () => {
-  mySelect.value.toggleMenu()
-}
 
 const submit = () => {
 
@@ -212,6 +181,7 @@ const submit = () => {
   }
 
   loginLoading.value = true
+  // 将用户输入的前缀与 suffix 值拼接成完整的邮箱地址
   login(form.email + suffix.value, form.password).then(async data => {
     localStorage.setItem('token', data.token)
     const user = await loginUserInfo();
@@ -319,6 +289,7 @@ function submitRegister() {
   registerLoading.value = true
 
   const form = {
+    // 将用户输入的前缀与 suffix 值拼接成完整的邮箱地址
     email: registerForm.email + suffix.value,
     password: registerForm.password,
     token: verifyToken,
@@ -469,8 +440,7 @@ function submitRegister() {
 
 :deep(.el-input-group__append) {
   padding: 0 !important;
-  padding-left: 8px !important;
-  padding-right: 4px !important;
+  padding: 0 15px !important;
   background: #FFFFFF;
   border-radius: 0 8px 8px 0;
 }
@@ -479,13 +449,6 @@ function submitRegister() {
   margin-bottom: 18px;
 }
 
-.select {
-  position: absolute;
-  right: 30px;
-  width: 100px;
-  opacity: 0;
-  pointer-events: none;
-}
 
 .custom-style {
   margin-bottom: 10px;
