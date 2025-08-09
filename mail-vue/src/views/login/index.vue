@@ -55,7 +55,7 @@ import router from "@/router";
 import {computed, nextTick, reactive, ref} from "vue";
 import {login} from "@/request/login.js";
 import {register} from "@/request/login.js";
-import {isEmail} from "@/utils/verify-utils.js";
+import {isEmailPrefix} from "@/utils/verify-utils.js";
 import {useSettingStore} from "@/store/setting.js";
 import {useAccountStore} from "@/store/account.js";
 import {useUserStore} from "@/store/user.js";
@@ -140,7 +140,7 @@ const submit = () => {
     return
   }
 
-  if (!isEmail(form.email)) {
+  if (!isEmailPrefix(form.email)) {
     ElMessage({
       message: t('notEmailMsg'),
       type: 'error',
@@ -187,7 +187,7 @@ function submitRegister() {
     return
   }
 
-  if (!isEmail(registerForm.email)) {
+  if (!isEmailPrefix(registerForm.email)) {
     ElMessage({
       message: t('notEmailMsg'),
       type: 'error',

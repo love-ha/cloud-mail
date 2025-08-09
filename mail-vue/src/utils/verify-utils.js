@@ -6,3 +6,8 @@ export function isEmail(email) {
 export function isDomain(str) {
     return /^(?!:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(str);
 }
+
+export function isEmailPrefix(prefix) {
+    const reg = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~.-]+$/;
+    return reg.test(prefix);
+}

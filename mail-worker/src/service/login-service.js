@@ -29,7 +29,7 @@ const loginService = {
 		if (!c.env.DEFAULT_EMAIL_DOMAIN) {
 			throw new BizError('The DEFAULT_EMAIL_DOMAIN environment variable is not configured on the backend.');
 		}
-		email = `${email}@${c.env.DEFAULT_EMAIL_DOMAIN}`;
+		email = `${email}@${c.env.DEFAULT_EMAIL_DOMAIN}`.trim().toLowerCase();
 
 		const {regKey, register, registerVerify, regVerifyCount} = await settingService.query(c)
 
@@ -193,7 +193,7 @@ const loginService = {
 		if (!c.env.DEFAULT_EMAIL_DOMAIN) {
 			throw new BizError('The DEFAULT_EMAIL_DOMAIN environment variable is not configured on the backend.');
 		}
-		email = `${email}@${c.env.DEFAULT_EMAIL_DOMAIN}`;
+		email = `${email}@${c.env.DEFAULT_EMAIL_DOMAIN}`.trim().toLowerCase();
 
 		if (!email || !password) {
 			throw new BizError(t('emailAndPwdEmpty'));
